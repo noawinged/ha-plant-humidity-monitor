@@ -1,0 +1,52 @@
+type: vertical-stack
+cards:
+  - type: entities
+    title: Global Settings
+    entities:
+      - entity: button.plant_humidity_monitor_force_update
+        name: Force Update ESP32
+      - entity: input_boolean.plant_show_voltage
+      - entity: input_button.plant_fertilize
+      - entity: input_number.plant_fertilizer_target
+      - entity: input_number.plant_fertilizer_offset
+  - type: entities
+    title: Profile Management
+    entities:
+      - entity: input_button.plant_save_settings
+        name: Save Profile
+      - entity: input_button.plant_restore_saved
+        name: Load Profile
+      - entity: input_button.plant_restore_default
+        name: Reset
+  - type: horizontal-stack
+    cards:
+      - type: entities
+        title: Nephrolepis (1)
+        entities:
+          - entity: input_number.plant_1_dry_v
+            name: Dry (V)
+          - entity: input_number.plant_1_wet_v
+            name: Wet (V)
+      - type: entities
+        title: Adiantum (2)
+        entities:
+          - entity: input_number.plant_2_dry_v
+            name: Dry (V)
+          - entity: input_number.plant_2_wet_v
+            name: Wet (V)
+  - type: horizontal-stack
+    cards:
+      - type: entities
+        title: Asplenium (3)
+        entities:
+          - entity: input_number.plant_3_dry_v
+            name: Dry (V)
+          - entity: input_number.plant_3_wet_v
+            name: Wet (V)
+      - type: entities
+        title: Phlebodium (4)
+        entities:
+          - entity: input_number.plant_4_dry_v
+            name: Dry (V)
+          - entity: input_number.plant_4_wet_v
+            name: Wet (V)

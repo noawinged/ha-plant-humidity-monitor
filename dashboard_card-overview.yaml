@@ -1,0 +1,11 @@
+type: entities
+entities:
+  - entity: sensor.ns_plant_1
+    name: Nephrolepis (1)
+  - entity: sensor.ns_plant_2
+    name: Adiantum (2)
+  - entity: sensor.ns_plant_3
+    name: Asplenium (3)
+  - entity: sensor.ns_plant_4
+    name: Phlebodium (4)
+title: Current Moisture
