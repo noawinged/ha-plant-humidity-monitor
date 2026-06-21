@@ -135,22 +135,22 @@ automation:
         data: { value: 3.14 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_1_wet_v }
-        data: { value: 0.71 }
+        data: { value: 1.10 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_2_dry_v }
         data: { value: 3.14 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_2_wet_v }
-        data: { value: 0.80 }
+        data: { value: 1.12 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_3_dry_v }
         data: { value: 3.14 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_3_wet_v }
-        data: { value: 0.96 }
+        data: { value: 1.05 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_4_dry_v }
         data: { value: 3.14 }
       - service: input_number.set_value
         target: { entity_id: input_number.plant_4_wet_v }
-        data: { value: 0.80 }
+        data: { value: 1.10 }

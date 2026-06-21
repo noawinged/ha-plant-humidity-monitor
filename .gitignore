@@ -1,0 +1,30 @@
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Secrets
+secrets.yaml
+!secrets.yaml.example
+
+# ESPHome
+.esphome/
+.pioenvs/
+.platformio/
+
+# Home Assistant
+.storage/
+backups/
+*_esphome.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.env

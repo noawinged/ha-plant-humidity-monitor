@@ -45,12 +45,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_1_wet_v:
     name: "Plant 1 Wet Limit (V)"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.10
     mode: box
 
   plant_2_dry_v:
@@ -58,12 +60,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_2_wet_v:
     name: "Plant 2 Wet Limit (V)"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.12
     mode: box
 
   plant_3_dry_v:
@@ -71,12 +75,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_3_wet_v:
     name: "Plant 3 Wet Limit (V)"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.05
     mode: box
 
   plant_4_dry_v:
@@ -84,12 +90,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_4_wet_v:
     name: "Plant 4 Wet Limit (V)"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.10
     mode: box
 
   # Hidden Backup Slots for Snapshot Feature
@@ -98,12 +106,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_1_wet_v_backup:
     name: "P1 Wet Backup"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.10
     mode: box
 
   plant_2_dry_v_backup:
@@ -111,12 +121,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_2_wet_v_backup:
     name: "P2 Wet Backup"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.12
     mode: box
 
   plant_3_dry_v_backup:
@@ -124,12 +136,14 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_3_wet_v_backup:
     name: "P3 Wet Backup"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.05
     mode: box
 
   plant_4_dry_v_backup:
@@ -137,10 +151,12 @@ input_number:
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 3.14
     mode: box
   plant_4_wet_v_backup:
     name: "P4 Wet Backup"
     min: 0.0
     max: 3.3
     step: 0.01
+    initial: 1.10
     mode: box
