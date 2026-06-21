@@ -1,0 +1,156 @@
+# ==============================================================================
+# MODULE: Plant Monitor Automations
+# DESCRIPTION: Automatically handles fertilizer offset, profile snapshots and factory resets.
+# ==============================================================================
+
+automation:
+  - alias: "Apply Fertilizer Offset"
+    trigger:
+      - platform: state
+        entity_id: input_button.plant_fertilize
+    action:
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.plant_fertilizer_offset
+        data:
+          value: "{{ states('input_number.plant_fertilizer_target') | float(0) }}"
+
+  - alias: "Fade Fertilizer Offset Daily"
+    trigger:
+      - platform: time
+        at: "00:00:00"
+    condition:
+      - condition: numeric_state
+        entity_id: input_number.plant_fertilizer_offset
+        above: 0
+    action:
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.plant_fertilizer_offset
+        data:
+          value: >
+            {% set current = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set new_val = current - 0.0125 %}
+            {{ new_val if new_val > 0 else 0 }}
+
+  - alias: "Save Current Plant Profile Snapshot"
+    trigger:
+      - platform: state
+        entity_id: input_button.plant_save_settings
+    action:
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_dry_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_1_dry_v') | float(3.14) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_wet_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_1_wet_v') | float(1.10) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_dry_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_2_dry_v') | float(3.14) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_wet_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_2_wet_v') | float(1.12) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_dry_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_3_dry_v') | float(3.14) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_wet_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_3_wet_v') | float(1.05) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_dry_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_4_dry_v') | float(3.14) }}" }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_wet_v_backup }
+        data:
+          { value: "{{ states('input_number.plant_4_wet_v') | float(1.10) }}" }
+
+  - alias: "Load Saved Plant Profile Snapshot"
+    trigger:
+      - platform: state
+        entity_id: input_button.plant_restore_saved
+    action:
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_dry_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_1_dry_v_backup') | float(3.14) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_wet_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_1_wet_v_backup') | float(1.10) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_dry_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_2_dry_v_backup') | float(3.14) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_wet_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_2_wet_v_backup') | float(1.12) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_dry_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_3_dry_v_backup') | float(3.14) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_wet_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_3_wet_v_backup') | float(1.05) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_dry_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_4_dry_v_backup') | float(3.14) }}",
+          }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_wet_v }
+        data:
+          {
+            value: "{{ states('input_number.plant_4_wet_v_backup') | float(1.10) }}",
+          }
+
+  - alias: "Restore Factory Glass Defaults"
+    trigger:
+      - platform: state
+        entity_id: input_button.plant_restore_default
+    action:
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_dry_v }
+        data: { value: 3.14 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_1_wet_v }
+        data: { value: 0.71 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_dry_v }
+        data: { value: 3.14 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_2_wet_v }
+        data: { value: 0.80 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_dry_v }
+        data: { value: 3.14 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_3_wet_v }
+        data: { value: 0.96 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_dry_v }
+        data: { value: 3.14 }
+      - service: input_number.set_value
+        target: { entity_id: input_number.plant_4_wet_v }
+        data: { value: 0.80 }

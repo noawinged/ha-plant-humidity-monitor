@@ -1,0 +1,106 @@
+# ==============================================================================
+# MODULE: Plant Monitor Dynamic Templates
+# DESCRIPTION: Handles mathematical mapping from Volts to Percent with offset.
+# ==============================================================================
+
+template:
+  - sensor:
+      - name: "NS Plant 1"
+        unit_of_measurement: "%"
+        icon: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            mdi:flash
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_1_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_1_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_1_wet_v') | float(1.10) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ 'mdi:water-alert' if percent < 50 else 'mdi:water-percent' }}
+          {% endif %}
+        state: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            {{ states('sensor.soil_moisture_1_raw') | float(0) | round(2) }}
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_1_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_1_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_1_wet_v') | float(1.10) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ [[percent | round(0), 100] | min, 0] | max }}
+          {% endif %}
+
+      - name: "NS Plant 2"
+        unit_of_measurement: "%"
+        icon: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            mdi:flash
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_2_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_2_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_2_wet_v') | float(1.12) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ 'mdi:water-alert' if percent < 60 else 'mdi:water-percent' }}
+          {% endif %}
+        state: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            {{ states('sensor.soil_moisture_2_raw') | float(0) | round(2) }}
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_2_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_2_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_2_wet_v') | float(1.12) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ [[percent | round(0), 100] | min, 0] | max }}
+          {% endif %}
+
+      - name: "NS Plant 3"
+        unit_of_measurement: "%"
+        icon: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            mdi:flash
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_3_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_3_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_3_wet_v') | float(1.05) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ 'mdi:water-alert' if percent < 40 else 'mdi:water-percent' }}
+          {% endif %}
+        state: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            {{ states('sensor.soil_moisture_3_raw') | float(0) | round(2) }}
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_3_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_3_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_3_wet_v') | float(1.05) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ [[percent | round(0), 100] | min, 0] | max }}
+          {% endif %}
+
+      - name: "NS Plant 4"
+        unit_of_measurement: "%"
+        icon: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            mdi:flash
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_4_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_4_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_4_wet_v') | float(1.10) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ 'mdi:water-alert' if percent < 40 else 'mdi:water-percent' }}
+          {% endif %}
+        state: >
+          {% if is_state('input_boolean.plant_show_voltage', 'on') %}
+            {{ states('sensor.soil_moisture_4_raw') | float(0) | round(2) }}
+          {% else %}
+            {% set raw = states('sensor.soil_moisture_4_raw') | float(0) %}
+            {% set offset = states('input_number.plant_fertilizer_offset') | float(0) %}
+            {% set dry = states('input_number.plant_4_dry_v') | float(3.14) %}
+            {% set wet = states('input_number.plant_4_wet_v') | float(1.10) %}
+            {% set percent = ((dry - (raw + offset)) / (dry - wet)) * 100 %}
+            {{ [[percent | round(0), 100] | min, 0] | max }}
+          {% endif %}

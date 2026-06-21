@@ -1,0 +1,146 @@
+# ==============================================================================
+# MODULE: Plant Monitor UI Helpers
+# DESCRIPTION: Defines sliders and buttons for calibration and fertilizer modes.
+# ==============================================================================
+
+input_boolean:
+  plant_show_voltage:
+    name: "Debug Mode (V)"
+    icon: mdi:sine-wave
+
+input_button:
+  plant_fertilize:
+    name: "Fertilizer Added"
+    icon: mdi:flask
+  plant_save_settings:
+    name: "Save Current Profile"
+    icon: mdi:content-save
+  plant_restore_saved:
+    name: "Load Saved Profile"
+    icon: mdi:file-restore
+  plant_restore_default:
+    name: "Restore Glass Defaults"
+    icon: mdi:factory
+
+input_number:
+  plant_fertilizer_offset:
+    name: "Current Fertilizer Offset (V)"
+    min: 0.0
+    max: 1.0
+    step: 0.001
+    initial: 0.0
+    mode: box
+
+  plant_fertilizer_target:
+    name: "Target Fertilizer Offset (V)"
+    min: 0.0
+    max: 1.0
+    step: 0.01
+    initial: 0.15
+    mode: box
+
+  # Active Calibration Profiles
+  plant_1_dry_v:
+    name: "Plant 1 Dry Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_1_wet_v:
+    name: "Plant 1 Wet Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_2_dry_v:
+    name: "Plant 2 Dry Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_2_wet_v:
+    name: "Plant 2 Wet Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_3_dry_v:
+    name: "Plant 3 Dry Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_3_wet_v:
+    name: "Plant 3 Wet Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_4_dry_v:
+    name: "Plant 4 Dry Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_4_wet_v:
+    name: "Plant 4 Wet Limit (V)"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  # Hidden Backup Slots for Snapshot Feature
+  plant_1_dry_v_backup:
+    name: "P1 Dry Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_1_wet_v_backup:
+    name: "P1 Wet Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_2_dry_v_backup:
+    name: "P2 Dry Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_2_wet_v_backup:
+    name: "P2 Wet Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_3_dry_v_backup:
+    name: "P3 Dry Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_3_wet_v_backup:
+    name: "P3 Wet Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+
+  plant_4_dry_v_backup:
+    name: "P4 Dry Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
+  plant_4_wet_v_backup:
+    name: "P4 Wet Backup"
+    min: 0.0
+    max: 3.3
+    step: 0.01
+    mode: box
