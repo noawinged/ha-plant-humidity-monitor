@@ -1,0 +1,92 @@
+# ==============================================================================
+# PROJECT: Plant Humidity Monitor
+# FILE: plant-monitor-debug.yaml
+# DESCRIPTION: Diagnostic mode. Provides raw voltage (V) readings for all sensors.
+# USE CASE: Testing electrical connections, debugging hardware issues, 
+#           and verifying raw ADC output without filters or power management.
+# ==============================================================================
+
+esphome:
+  name: plant-humidity-monitor
+  friendly_name: plant-humidity-monitor
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret device_api_key
+
+ota:
+  - platform: esphome
+    password: !secret device_ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Plant-Humidity-Monitor"
+    password: !secret device_ap_password
+
+captive_portal:
+    
+# Power control configuration using safe digital pins (Group 3)
+switch:
+  - platform: gpio
+    pin: GPIO38
+    id: power_sensor_1
+    restore_mode: ALWAYS_ON
+  - platform: gpio
+    pin: GPIO39
+    id: power_sensor_2
+    restore_mode: ALWAYS_ON
+  - platform: gpio
+    pin: GPIO40
+    id: power_sensor_3
+    restore_mode: ALWAYS_ON
+  - platform: gpio
+    pin: GPIO41
+    id: power_sensor_4
+    restore_mode: ALWAYS_ON
+
+# Analog configuration using premium ADC1 pins (Group 1) without strapping or PSRAM conflicts
+sensor:
+  - platform: adc
+    pin: GPIO1
+    name: "Soil Moisture 1 Voltage"
+    update_interval: 2s
+    attenuation: 12db
+    id: moisture_sensor_1
+    unit_of_measurement: "V"
+
+  - platform: adc
+    pin: GPIO2
+    name: "Soil Moisture 2 Voltage"
+    update_interval: 2s
+    attenuation: 12db
+    id: moisture_sensor_2
+    unit_of_measurement: "V"
+
+  - platform: adc
+    pin: GPIO4
+    name: "Soil Moisture 3 Voltage"
+    update_interval: 2s
+    attenuation: 12db
+    id: moisture_sensor_3
+    unit_of_measurement: "V"
+
+  - platform: adc
+    pin: GPIO5
+    name: "Soil Moisture 4 Voltage"
+    update_interval: 2s
+    attenuation: 12db
+    id: moisture_sensor_4
+    unit_of_measurement: "V"

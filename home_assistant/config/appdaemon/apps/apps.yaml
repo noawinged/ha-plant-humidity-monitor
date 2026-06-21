@@ -1,0 +1,26 @@
+---
+nspanel-1:
+  module: nspanel-lovelace-ui
+  class: NsPanelLovelaceUIManager
+  config:
+  
+    ...
+
+    cards:
+      - type: cardGrid
+        title: Plants
+        entities:
+          - entity: sensor.ns_plant_1
+            name: Nephrolepis
+          - entity: sensor.ns_plant_2
+            name: Adiantum
+          - entity: sensor.ns_plant_3
+            name: Asplenium
+          - entity: sensor.ns_plant_4
+            name: Phlebodium
+          - entity: input_button.plant_fertilize
+            icon: mdi:flask
+            name: Fertilize
+          - entity: button.plant_humidity_monitor_force_update
+            icon: mdi:refresh
+            name: Refresh
