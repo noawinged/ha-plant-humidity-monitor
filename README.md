@@ -1,17 +1,19 @@
 # Plant Humidity Monitor
 
-A Home Assistant integration for real-time soil moisture monitoring across multiple plants using ESP32 and resistive soil sensors.
+A Home Assistant integration for real-time soil moisture monitoring across multiple plants using ESP32 and capacitive soil sensors.
 
-**Read the full story:** [The Soil Sensor Saga](https://noawinged.me/entry/soil-sensor-saga) — a blog post about building this system, transition, and discovering that sometimes the answer is far simpler than you think.
+> **Work in Progress** — v1 used resistive sensors and hit a known limitation with peat soil. This repo is being updated to use capacitive sensors (Cytron Maker Soil Moisture). See the [Sensor Upgrade](#-sensor-upgrade-in-progress) section.
+
+**Read the full story:** [The Soil Sensor Saga](https://noawinged.me/entry/soil-sensor-saga) — a blog post about building this system, transition, and discovering that AI can give you beautifully confident wrong answers.
 
 ## Hardware Setup
 
 ### What You Need
 
 - **ESP32-S3-DevKit-C-1** — the brain (~$10)
-- **4x Resistive Soil Moisture Sensors** — the eyes in the dirt (~$5)
+- **4x Soil Moisture Sensors** — see [Sensor Upgrade](#-sensor-upgrade-in-progress) for which ones to buy
 - **Dupont Jumper Cables** — connectors (~$2)
-- **Home Assistant** — automation and history (something you likely have)
+- **Home Assistant** — automation and history
 
 **Total cost: less than a plant pot.**
 
@@ -33,7 +35,23 @@ GPIO Pins (for sensor power switches):
   GPIO41 → Power Sensor 4
 ```
 
-**Why power switches?** Sensors powered continuously cause electrolysis in soil, degrading it. This setup powers each sensor for only 2 seconds during measurement — about 48 seconds per day instead of 24 hours continuously.
+**Why power switches?** Sensors powered continuously cause electrolysis in soil. This setup powers each sensor for only 2 seconds during measurement — about 48 seconds per day instead of 24 hours continuously. This matters more for resistive sensors (exposed metal), but is good practice regardless.
+
+## ⚠️ Sensor Upgrade In Progress
+
+The original build used cheap **resistive** soil moisture sensors (FC-28 style, ~$5 for four). These work by passing electrical current between two exposed metal probes through the soil.
+
+**The problem with resistive sensors in peat:**
+
+Peat soil shrinks as it dries. As it contracts, it pulls away from the sensor probes, creating tiny air pockets. Since resistive sensors require direct galvanic contact with soil to measure anything, even a small air gap breaks the circuit completely — the sensor reads 0% regardless of actual moisture levels nearby. The only fix is to press the probe back into soil manually.
+
+This turns "automated plant monitoring" into "walking around re-pressing sensors with your finger every few days." Not quite the dream.
+
+**Why capacitive sensors are better for this:**
+
+Capacitive sensors emit an electric field around the probe rather than passing current through it. That field can read through small gaps — the peat shrinkage still affects readings slightly, but doesn't cause complete circuit breaks. Isolated probes also don't corrode in acidic peat substrate over time.
+
+**What's changing:** The configs in this repo are being updated for the **Cytron Maker Soil Moisture** capacitive sensor. Same ESP32 pins, same YAML structure, better physics. Calibration values will be updated when the hardware swap is complete.
 
 ## Installation
 
@@ -47,9 +65,11 @@ cp secrets.yaml.example secrets.yaml
 esphome run plant_humidity_monitor-prod.yaml
 ```
 
-Use the `plant_humidity_monitor-prod.yaml` (15-minute intervals) for daily use. The other two are for development:
+Use `prod.yaml` (15-minute intervals) for daily use. The other two are for development:
 - `debug.yaml` — real-time voltage for hardware testing
 - `live.yaml` — 2-second refresh for calibration
+
+**Tip:** Compile locally on your machine, not in Home Assistant. HA Green takes 10+ minutes per build; a laptop takes ~3 minutes. That difference changes how willing you are to iterate.
 
 ### 2. Add Home Assistant Configuration
 
@@ -59,8 +79,6 @@ Use the `plant_humidity_monitor-prod.yaml` (15-minute intervals) for daily use. 
 homeassistant:
   packages: !include_dir_named packages
 ```
-
-(If it's not there, add it. If the `homeassistant:` section already exists, just add the `packages:` line.)
 
 **Then:** Copy the Home Assistant config package:
 
@@ -76,7 +94,7 @@ Restart Home Assistant. You should see four raw voltage sensors (`sensor.soil_mo
 The system sends **raw voltages** to Home Assistant. You define the math in software:
 
 - **Air / Dry soil:** ~3.14V / ~2.10V
-- **Water / Wet soil (just watered):** ~1.05 / ~1.15V
+- **Water / Wet soil (just watered):** ~1.05V / ~1.15V
 - **Linear mapping:** convert volts to percentage
 
 For each plant:
@@ -84,7 +102,7 @@ For each plant:
 2. Water thoroughly. Record the voltage 15 minutes later.
 3. Set these in the Home Assistant sliders (`Plant X Dry/Wet Limit`).
 
-**⚠️ Calibrate with actual cables in place.** Cable length affects voltage — a 2.5m cable reads differently than 0.5m.
+**Calibrate with actual cables in place.** Cable length affects voltage — a 2.5m cable reads differently than 0.5m. Always do final calibration with your real setup, not on the desk.
 
 ### 4. Dashboard
 
@@ -101,71 +119,59 @@ Or configure manually in the HA UI. The key template sensors are `NS Plant 1/2/3
 
 ### ESP32 Configuration (`esp32/plant_humidity_monitor-prod.yaml`)
 
-- **15-minute measurement cycle** — balances battery life and data freshness
+- **15-minute measurement cycle**
 - **Power management script** — safely powers sensors on/off
 - **Raw voltage output** — Home Assistant handles calibration logic
 
-Edit for your setup:
-- Change `interval: 15min` if you want more/less frequent readings
-- Add more sensors by duplicating the GPIO switch and ADC sensor blocks
-
 ### Home Assistant Core (`home_assistant/config/packages/plant_humidity_monitor/core.yaml`)
 
-**Template sensors** that convert raw voltage to percentage:
-- Each plant has its own calibration (dry/wet limits)
+**Template sensors** converting raw voltage to percentage:
+- Per-plant calibration (dry/wet limits)
 - Fertilizer offset slider for multi-day tracking
-- Debug toggle to show raw voltage instead of percentage
-- Icon changes to water-alert when moisture drops below thresholds
+- Debug toggle to show raw voltage
+- Icon switches to water-alert below individual thresholds
 
-Thresholds per plant:
-- Plant 1 & 4: alert below 50%
-- Plant 2: alert below 60%
-- Plant 3: alert below 40%
-
-Edit these numbers based on your plant species' needs.
+Thresholds: Plant 1 & 4 below 50%, Plant 2 below 60%, Plant 3 below 40%.
 
 ### Home Assistant User Config (`home_assistant/config/packages/plant_humidity_monitor/user_config.yaml`)
 
-Sliders and buttons for:
-- **Debug mode toggle** — show voltage instead of percent
-- **Fertilizer offset** — account for nutrient conductivity changes
-- **Calibration sliders** — dry/wet voltage limits per plant
-- **Save/restore buttons** — snapshot and restore profiles
+Sliders and buttons: debug toggle, fertilizer offset, calibration sliders per plant, save/restore profiles.
 
 ## Troubleshooting
 
 ### Sensors show moisture dropping impossibly fast
 
-**Example:** You water thoroughly (90% moisture), but within 3 hours the reading drops to 30%, and by evening it's at 0%, even though the soil is still wet.
+**Example:** You water (90%), and within hours the reading crashes to 0% while the soil is still obviously wet.
 
-**Root cause:** Peat soil shrinks as it dries, pulling away from the sensor probes and creating microscopic air pockets. The sensor measures dielectric permittivity. When there's an air gap around the probe, it thinks the soil is dryer.
+**Root cause:** This is the resistive sensor air gap problem described above. Peat shrinks as it dries, pulling away from the metal probes and breaking the electrical circuit. The sensor measures conductivity between its prongs — no contact means no reading.
 
-**Fix:** Press each sensor firmly into soil, making sure the probes have full, solid contact. This is not a bug — it's just physics.
+**Immediate fix:** Press each sensor firmly back into soil with solid contact.
+
+**Real fix:** Upgrade to capacitive sensors (see [Sensor Upgrade](#-sensor-upgrade-in-progress)).
 
 ### Sensor readings drift over time
 
-Soil resistance changes as it dries. That's why we don't do "set it once" calibration. The controls in Home Assistant let you adjust on the fly. For long-term tracking, use the fertilizer offset control or re-calibrate every few weeks.
+Soil conditions change as it dries and re-wets. Use the calibration sliders in Home Assistant to adjust on the fly rather than reflashing firmware. That's why calibration lives in HA rather than the ESP32 config.
 
 ## Why This Design
 
 ### Raw voltage in firmware, calibration in HA
 
-I wanted to avoid putting all the math in the ESP32. That means flashing new firmware every time you re-calibrate. This design sends raw voltage and does the math in HA instead.
-
-**Why:** Calibration changes. Soil type changes. You add a plant or swap sensors. Doing the logic in HA means you tweak a slider instead of reflashing.
+Calibration changes — soil type changes, you add a plant, you swap sensors. Doing the logic in HA means tweaking a slider instead of reflashing.
 
 ### 15-minute intervals with power management
 
-Battery projects use deep sleep. This one is plugged in, so we don't. But we still power-gate the sensors to avoid electrolysis. 15 minutes is long enough that you see trends, short enough that you catch problems before they're serious.
+Plugged in, not battery-powered, so no deep sleep. Power-gating the sensors prevents electrolysis. 15 minutes is long enough to see trends, short enough to catch problems before they're serious.
 
 ### Four plants, hardcoded
 
-This started as a one-off for four ferns. Generalizing to N plants would add complexity. If you need more, duplicate the sensor blocks in the YAML and the template sensor blocks in core.yaml.
+This started as a one-off for four ferns. If you need more, duplicate the sensor blocks in the YAML and template sensor blocks in `core.yaml`.
 
 ## File Structure
 
 ```
 ├── README.md (this file)
+├── SETUP.md
 ├── esp32/
 │   ├── plant_humidity_monitor-debug.yaml    # Real-time for testing
 │   ├── plant_humidity_monitor-live.yaml     # 2s refresh for calibration
@@ -173,7 +179,7 @@ This started as a one-off for four ferns. Generalizing to N plants would add com
 │   └── secrets.yaml.example                 # Copy and fill in your WiFi
 └── home_assistant/
     ├── config/
-    │   ├── configuration.yaml                # Add: homeassistant.packages.plant_...
+    │   ├── configuration.yaml                # Add: homeassistant.packages
     │   ├── appdaemon/apps/apps.yaml          # (Optional)
     │   └── packages/plant_humidity_monitor/
     │       ├── core.yaml                     # Template sensors (calibration math)
@@ -186,18 +192,18 @@ This started as a one-off for four ferns. Generalizing to N plants would add com
 
 ## Tips & Gotchas
 
-1. **Peat soil shrinks.** When readings drop to zero without reason, it's probably air pockets. Not a bug.
-2. **Cable length matters.** Voltage changes with resistance. Calibrate with your actual cable setup.
-3. **Two types of meters measure different things.** A capacitive sensor and a resistive meter won't agree. Both are right for their measurement type.
-4. **Iteration speed matters.** Local compilation on your machine is 3× faster than on Home Assistant Green. Set that up first.
-5. **AI made this possible.** Without being able to ask questions and get real answers, this project would've taken weeks. Now it's a weekend.
+1. **Resistive sensors and peat don't mix well.** If readings drop to zero without reason, it's air pockets. Not a bug — a hardware limitation. Upgrade to capacitive.
+2. **Cable length matters.** Calibrate with your actual cable setup, not on the test bench.
+3. **ADC2 pins are unusable with WiFi.** Stick to GPIO1-10 for sensor readings.
+4. **Compile locally.** 3 minutes vs 10+ minutes changes how much you're willing to experiment.
+5. **AI helps and sometimes hallucinates.** It made this project possible and also described the wrong sensor physics for two paragraphs. Verify things that matter.
 
 ## License
 
-This is a personal project shared freely. Do with it what you like.
+Personal project, shared freely. Do with it what you like.
 
 ## See Also
 
 - [ESPHome Docs](https://esphome.io/)
 - [Home Assistant Docs](https://www.home-assistant.io/docs/)
-- [The Soil Sensor Saga](https://noawinged.me/entry/soil-sensor-saga) — the full story of building this
+- [The Soil Sensor Saga](https://noawinged.me/entry/soil-sensor-saga) — the full story
